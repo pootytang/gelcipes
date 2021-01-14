@@ -1,0 +1,2 @@
+Use Router Guards to ensure if a user is authenticated already, cannot route to /login or /signup
+Use Route Guard to ensure if a user is NOT authenticated already, Home page should redirect to /login
