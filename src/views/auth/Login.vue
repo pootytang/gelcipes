@@ -38,9 +38,6 @@ export default {
 
     const handleGoogleLogin = async () => {
       const res = await gLogin()
-      console.log('Login -> handleGoogleLogin')
-      console.log(res.value.token)
-      console.log(res.value.user)
       return
     }
 
