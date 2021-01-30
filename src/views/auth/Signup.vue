@@ -6,7 +6,8 @@
     <input v-model="password" type="password" placeholder="Enter your passoword" autocomplete="on" required />
     <input v-model="confirmPassword" type="password" placeholder="Confirm your passoword" autocomplete="on" required />
     <div class="error">{{ signUpError }}</div>
-    <button>Signup</button>
+    <button v-if="!signUpError">Signup</button>
+    <button v-else disabled>Signup</button>
   </form>
   <p>Already have an account? <router-link :to="{ name: 'Login' }" ><span>Login Here</span></router-link></p> 
 </template>

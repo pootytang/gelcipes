@@ -1,5 +1,5 @@
 import { ref } from "vue"
-import { fbaseAuth } from '../../firebase/config'
+import { fbaseAuth, gProvider } from '../../firebase/config'
 
 const error = ref(null)
 const isPending = ref(false)
@@ -20,8 +20,24 @@ const login = async (email, password) => {
   }
 }
 
+const gLogin = async () => {
+  error.value = null
+  isPending.value = true
+
+  try {
+    const res = await fbaseAuth.signInWithRedirect(gProvider)
+    error.value = null
+    isPending = false
+    return res
+  } catch (err) {
+    console.log(err.value)
+    error.value = 'Login to Google Failed'
+    isPending.value = false
+  }
+}
+
 const useLogin = () => {
-  return { isPending, error, login }
+  return { isPending, error, login, gLogin }
 }
 
 export default useLogin

@@ -1,34 +1,55 @@
 <template>
-    <div v-if="!isPending">
-      <RecipeItem :recipes="recipes" />
-    </div>
-    <div v-else>
-      <h3>You have no recipes. Try adding one</h3>
-    </div>  
+  <div v-if="recipes.length">
+    <section class="recipes">
+      <div v-for="recipe in recipes" :key="recipe.id" class="recipe">
+        <RecipeItem :recipe="recipe" />
+      </div>
+    </section>
+  </div>
+  <div v-else>
+    <h3>You have no recipes. Try adding one</h3>
+  </div>  
 </template>
 
 <script>
-import getCollection from '@/composables/firebase/getCollection'
-import getUser from '@/composables/firebase/getUser'
 import RecipeItem from '@/components/RecipeItem'
-import { ref } from 'vue'
+import Spinner from '@/components/base/Spinner'
 
 export default {
   name: 'RecipesList',
-  components: { RecipeItem },
+  props: ['recipes'],
+  components: { RecipeItem, Spinner},
   setup () {
-    const isPending = ref(true)
-    const { user } = getUser()
 
-    // const { documents: recipes } = getCollection('recipes', ['userId', '==', user.value.uid])
-    const { error, documents: recipes } = getCollection('recipes')
-    isPending.value = false
-
-    return { isPending, recipes, error }
+    return {}
   }
 }
 </script>
 
-<style scoped>
-
+<style>
+.recipes {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  justify-content: center;
+  align-items: center;
+  /* border: 2px dashed blue; */
+}
+.recipe {
+  box-sizing: border-box;
+  border-radius: 30px;
+  background: cornsilk;
+  /* background: floralwhite; */
+  /* background: lightgoldenrodyellow; */
+  /* background: whitesmoke; */
+  box-shadow: 0 3px 3px #aaa;
+  margin: 10px;
+  padding: 8px;
+  width: 280px;
+  transition: all ease 0.2s;
+}
+.recipe:hover {
+  box-shadow: 1px 5px 3px #888;
+  transform: scale(1.02);
+  transition: all ease 0.2s;
+}
 </style>

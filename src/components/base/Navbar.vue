@@ -1,7 +1,9 @@
 <template>
   <div class="navbar">
     <nav>
-      <img src="@/assets/GelcipeLogo_blk.png" />
+      <!-- <img src="@/assets/GelcipeMWIcon.png" /> -->
+      <!-- <img src="https://res.cloudinary.com/gelane/image/upload/ar_1:1,b_rgb:262c35,bo_3px_solid_rgb:01bd41,c_fill,e_make_transparent:10,g_auto,o_100,r_max,w_1000/v1611905296/WebProjects/GelcipeMWIcon_svipv9.png" /> -->
+      <img src="https://res.cloudinary.com/gelane/image/upload/ar_1:1,bo_5px_solid_rgb:008d36,c_fill,co_rgb:ffffff,e_bgremoval,g_auto,r_max,w_1000/v1611905296/WebProjects/GelcipeMWIcon_svipv9.png" />
       <h1><router-link :to="{ name: 'Home' }">GELCIPES</router-link></h1>
       <div class="links">
         <div v-if="user">
@@ -31,9 +33,6 @@ export default {
     const router = useRouter()
     const { user } = getUser()
     const { isPending, logout, error } = useLogout()
-    
-
-    console.log('Navbar user check: ', user)
 
     const handleLogout = async () => {
       await logout()
@@ -52,7 +51,8 @@ export default {
 .navbar {
     padding: 5px 10px;
     margin-bottom: 70px;
-    background: white;
+    background: cornsilk;
+    border-bottom: 2px solid darkgreen;
   }
   nav {
     display: flex;

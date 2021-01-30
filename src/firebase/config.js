@@ -16,8 +16,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 
 const fbaseAuth = firebase.auth()
+const gProvider = new firebase.auth.GoogleAuthProvider()
+const fbaseFirestoreUnion = firebase.firestore.FieldValue.arrayUnion
 const fbaseFirestore = firebase.firestore()
 const fbaseStorage = firebase.storage()
 const timestamp = firebase.firestore.FieldValue.serverTimestamp
 
-export { fbaseAuth, fbaseFirestore, fbaseStorage, timestamp }
+export { fbaseAuth, gProvider, fbaseFirestore, fbaseStorage, fbaseFirestoreUnion, timestamp }

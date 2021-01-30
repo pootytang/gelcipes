@@ -7,6 +7,7 @@
 
 /* base styles  */
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
   font-family: Arial, Helvetica, sans-serif;
@@ -15,6 +16,9 @@
 
 body {
   background: #fafafa;
+  /* display: flex;
+  align-items: center;
+  min-height: 100vh; */
 }
 
 a {
@@ -68,6 +72,35 @@ form {
   box-shadow: 1px 2px 3px rgba(50,50,50,0.05);
   border: 1px solid  var(--secondary);
   background: white;
+}
+
+.tag {
+  display: inline-block;
+  margin: 2px 2px 0 0;
+  margin-bottom: 20px;
+  color: white;
+  background: darkgreen;
+  border: 1px solid black;
+  padding: 8px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tag-grey {
+  display: inline-block;
+  margin: 2px 2px 0 0;
+  margin-bottom: 20px;
+  color: rgb(102, 102, 102);
+  background: lightgray;
+  padding: 8px;
+  border-radius: 20px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.tag-grey:hover {
+  color: darkgreen;
 }
 
 /* error text */

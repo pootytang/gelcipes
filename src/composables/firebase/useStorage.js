@@ -9,8 +9,12 @@ const useStorage = () => {
   const url = ref(null)
   const filePath = ref(null)
 
-  const uploadImage = async (file) => {
-    filePath.value = `gelcipe_images/${user.value.uid}/${file.name}`
+  const uploadImage = async (file, dir) => {
+    if (dir) {
+      filePath.value = `gelcipe_images/${user.value.uid}/days/${dir}/${file.name}`
+    } else {
+      filePath.value = `gelcipe_images/${user.value.uid}/cover/${file.name}`
+    }
     const storageRef = fbaseStorage.ref(filePath.value)
 
     try {

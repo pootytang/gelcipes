@@ -1,5 +1,5 @@
 <template>
-  <div class="recipe-container">
+  <div v-if="owner" class="recipe-container">
 
     <div class="error" v-if="error">{{ error }}</div>
     <div class="recipe-details" v-if="recipe">
@@ -7,11 +7,16 @@
         <img :src="recipe.coverUrl" />
         <h2>
           {{ recipe.title }} 
-          <span v-if="!recipe.isFav && !favorite"><img class="favImg" src="@/assets/blankHeart.png" @click="favorite = !recipe.isFav" /></span>
-          <span v-else ><img class="favImg" src="@/assets/filledHeart.png" @click="favorite = !recipe.isFav" /></span>
+
+          <!-- Favorite -->
+          <span v-if="!recipe.isFav"><img class="favImg" src="@/assets/blankHeart.png" @click="setFavorite" /></span>
+          <span v-else ><img class="favImg" src="@/assets/filledHeart.png" @click="setFavorite" /></span>
         </h2>
+        <div class="tag" v-for="tag in recipe.hashTags" :key="tag" @click="deleteTag(tag)">
+          #{{ tag }}
+        </div>
       </div>
-      
+      <PreviousDaysCooked :recipeId="id" />
       <div class="inner-grid">
 
         <!-- TIMES -->
@@ -42,38 +47,47 @@
 
         <!-- HashTags -->
         <div class="hashtags">
-          <h3>Tags:</h3>
-          <div class="tags" v-for="tag in recipe.hashTags" :key="tag">
+          <input type="text" v-model="tag" placeholder="add new tag (press enter after each tag)" class="newtag" @keydown.enter.prevent="newtag"/>
+          <div class="tag" v-for="tag in recipe.hashTags" :key="tag" @click="deleteTag(tag)">
             #{{ tag }}
           </div>
         </div>
-
-      <!-- Days Cooked -->
-      <!-- <div class="days-cooked">
-        <div v-for="day in recipe.daysCooked" :key="day">
-          {{ day }}
-          <div class="cook-day" v-for="img in day" :key="img.id" >
-            {{ img }}
-          </div>
-        </div> 
-      </div> -->
+      <FileUpload :id="id" />
     </div>
 
   </div>
+  <div v-else>Sorry, you don't have access to this page</div>
 </template>
 
 <script>
+import FileUpload from '../../components/FileUpload'
+import PreviousDaysCooked from '../../components/PreviousDaysCooked'
+import getUser from '@/composables/firebase/getUser'
 import getDocument from '@/composables/firebase/getDocument'
-import { computed, ref, watch } from 'vue';
+import useDocument from '@/composables/firebase/useDocument'
+import useStorage from '@/composables/firebase/useStorage'
+import { computed, onBeforeMount, onBeforeUpdate, onMounted, onUpdated, reactive, ref, watch } from 'vue';
+
 
 export default {
 	name: "GelcipeDetails",
   props: ['id'],
-	components: {},
+	components: { FileUpload, PreviousDaysCooked },
 	setup(props) {
     const { error, document: recipe } = getDocument('recipes', props.id)
+    const { updateDoc, isPending, error: useDocError } = useDocument('recipes', props.id)
+    const { user } = getUser()
+
+    const tag = ref('')
     const favorite = ref(false)
     const needs = ref([])
+
+    const owner = computed(() => {
+      if (recipe.value) {
+        return recipe.value && user.value && recipe.value.userId == user.value.uid
+      }
+    })
+
     const ingredients = computed(() => {
       if (recipe) {
         return recipe.value.ingredients.split('\n')
@@ -87,13 +101,54 @@ export default {
       }
     })
 
-    watch(favorite, (newval, oldval) => {
-      recipe.value.isFav = favorite
-      // update the value in the db
+    /************************************ 
+                FAVORITE
+     ************************************/
+    onBeforeUpdate(() => {
+      // set the favorite property's initial value
+      favorite.value = recipe.value.isFav
+    })
+    
+    const setFavorite = async () => {
+      favorite.value = !favorite.value
+
+      useDocError.value = null
+      await updateDoc({
+        'isFav': favorite.value
+      })
+      if (!useDocError.value) {
+        recipe.value.isFav = favorite.value
+      } else {
+        console.error('Problem updating favorite in DB')
+      }
+    }
+
+    /************************************ 
+            HASH TAG FUNCTIONS
+     ************************************/
+    const newtag = computed(() => {
+      if (tag && !recipe.value.hashTags.includes(tag)){
+        recipe.value.hashTags.push(tag.value)
+        updateTags()
+        return tag.value = ''
+      }
     })
 
+    const deleteTag = (deleteMe) => {
+      if (recipe.value.hashTags.includes(deleteMe)) {
+        recipe.value.hashTags = recipe.value.hashTags.filter(t => t !== deleteMe)
+        updateTags()
+      }
+    }
+
+    const updateTags = async () => {
+      console.log('Updating Tags')
+      await updateDoc({
+        hashTags: [...recipe.value.hashTags]
+      })
+    }
     
-		return { error, recipe, favorite, ingredients, directions }
+		return { error, recipe, setFavorite, ingredients, directions, newtag, tag, deleteTag, owner }
 	},
 };
 </script>
@@ -131,6 +186,10 @@ export default {
   .inner-grid {
     display: grid;
   }
+
+  .main-info {
+    border: 1px solid black;
+  }
   .ingredients {
     text-align: left;
     padding: 0px 0px 20px 0px;
@@ -148,8 +207,19 @@ export default {
   }
   .times {
     margin-left: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     text-align: left;
+    border: 1px solid black;
+  }
+  .hashtags {
+    display: inline-block;
+    margin: 0 auto;
+  }
+  .newtag {
+    background-color: lightgray;
+    border: 1px solid darkgray;
+    border-radius: 20px;
+    margin: 0px 0px 10px 0px;
   }
   .tags {
     display: inline-block;
@@ -157,10 +227,11 @@ export default {
     margin-bottom: 20px;
     color: white;
     background: darkgreen;
-    border: none;
+    border: 1px solid black;
     padding: 8px;
     border-radius: 20px;
     font-size: 14px;
+    cursor: pointer;
   }
   .username {
     color: #999;
