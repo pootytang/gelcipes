@@ -30,8 +30,6 @@ export default {
 
     const { error, documents: recipes } = getCollection('recipes', ['userId', '==', user.value.uid])
     isPending.value = false
-    console.log('Home')
-    console.log(user.value.user)
 
     const handleTagClicked = ((tag) => {
       filteredRecipes.value = recipes.value.filter((recipe) => recipe.hashTags.includes(tag))
