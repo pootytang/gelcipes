@@ -30,7 +30,7 @@ const gLogin = async () => {
     isPending = false
     return res
   } catch (err) {
-    console.log(err.value)
+    console.log(err)
     error.value = 'Login to Google Failed'
     isPending.value = false
   }
