@@ -16,10 +16,16 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 
 const fbaseAuth = firebase.auth()
+
+// Providers for use with Login page
 const gProvider = new firebase.auth.GoogleAuthProvider()
+const fbProvider = new firebase.auth.FacebookAuthProvider()
+const twProvider = new firebase.auth.TwitterAuthProvider()
+
+// Firebase features
 const fbaseFirestoreUnion = firebase.firestore.FieldValue.arrayUnion
 const fbaseFirestore = firebase.firestore()
 const fbaseStorage = firebase.storage()
 const timestamp = firebase.firestore.FieldValue.serverTimestamp
 
-export { fbaseAuth, gProvider, fbaseFirestore, fbaseStorage, fbaseFirestoreUnion, timestamp }
+export { fbaseAuth, gProvider, fbProvider, fbaseFirestore, fbaseStorage, fbaseFirestoreUnion, timestamp }

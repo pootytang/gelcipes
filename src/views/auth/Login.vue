@@ -8,9 +8,9 @@
     <button v-else-if="error" disabled>Login</button>
     <button v-else>Checking...</button>
     <div class="oauth">
-      <a class="fa fa-google" @click="handleGoogleLogin"></a>
-      <a href="#" class="fa fa-facebook"></a>
-      <a href="#" class="fa fa-twitter"></a>
+      <a class="fa fa-google" @click="handleLogin('google')"></a>
+      <a class="fa fa-facebook" @click="handleLogin('fb')"></a>
+      <a class="fa fa-twitter" @click="handleLogin('tw')"></a>
     </div>
   </form>
   <p>Do not have an account? <router-link :to="{ name: 'Signup' }" ><span>Signup Here</span></router-link></p> 
@@ -27,21 +27,34 @@ export default {
     const email = ref('')
     const password = ref('')
     const router = useRouter()
-    const { error, login, gLogin, isPending } = useLogin()
+    const { error, login, gLogin, fbLogin, twLogin, isPending } = useLogin()
 
-    const handleLogin = async () => {
-      const res = await login(email.value, password.value)
+    const handleLogin = async (provider) => {
+      let res = null
+      switch (provider) {
+        case 'google':
+          console.log('Google Provider Selected')
+          res = await gLogin()
+          break
+        case 'fb':
+          console.log('Facebook Provider Selected')
+          res = await fbLogin()
+          break
+        case 'tw':
+          console.log('Twitter Provider Selected')
+          res = await twLogin()
+          break
+        default:
+          console.log('Logging in with Email and Password')
+          res = await login(email.value, password.value)
+      }
       if (!error.value) {
+        console.log(res)
         router.push({ name: 'Home' })
       }
     }
 
-    const handleGoogleLogin = async () => {
-      const res = await gLogin()
-      return
-    }
-
-    return { error, isPending, email, password, handleLogin, handleGoogleLogin }
+    return { error, isPending, email, password, handleLogin }
   }
 }
 </script>
@@ -59,6 +72,7 @@ export default {
   text-align: center;
   text-decoration: none;
   margin: 15px 10px;
+  cursor: pointer;
 }
 
 .fa:hover {
