@@ -28,4 +28,4 @@ const fbaseFirestore = firebase.firestore()
 const fbaseStorage = firebase.storage()
 const timestamp = firebase.firestore.FieldValue.serverTimestamp
 
-export { fbaseAuth, gProvider, fbProvider, fbaseFirestore, fbaseStorage, fbaseFirestoreUnion, timestamp }
+export { fbaseAuth, gProvider, fbProvider, twProvider, fbaseFirestore, fbaseStorage, fbaseFirestoreUnion, timestamp }

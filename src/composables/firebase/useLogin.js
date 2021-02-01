@@ -63,7 +63,7 @@ const twLogin = async () => {
     return res
   } catch (err) {
     console.log(err)
-    error.value = 'Login to Facebook Failed' + err.message
+    error.value = 'Login to Twitter Failed' + err.message
     isPending.value = false
   }
 }
